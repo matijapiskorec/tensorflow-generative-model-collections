@@ -42,7 +42,29 @@ class GAN(object):
             # get number of batches for a single epoch
             self.num_batches = len(self.data_X) // self.batch_size
         else:
-            raise NotImplementedError
+            # raise NotImplementedError
+
+            self.z_dim = z_dim         # dimension of noise-vector
+            self.c_dim = 1
+
+            # train
+            self.learning_rate = 0.0002
+            self.beta1 = 0.5
+
+            # test
+            self.sample_num = 64  # number of generated images to be saved
+
+            # load dataset
+            self.data_X, _ = load_from_folder(self.dataset_name)
+
+            # parameters
+            self.input_height = self.data_X.shape[1]
+            self.input_width = self.data_X.shape[1]
+            self.output_height = self.data_X.shape[1]
+            self.output_width = self.data_X.shape[1]
+
+            # get number of batches for a single epoch
+            self.num_batches = len(self.data_X) // self.batch_size
 
     def discriminator(self, x, is_training=True, reuse=False):
         # Network Architecture is exactly same as in infoGAN (https://arxiv.org/abs/1606.03657)
@@ -65,11 +87,11 @@ class GAN(object):
             net = tf.nn.relu(bn(linear(z, 1024, scope='g_fc1'), is_training=is_training, scope='g_bn1'))
             net = tf.nn.relu(bn(linear(net, 128 * 7 * 7, scope='g_fc2'), is_training=is_training, scope='g_bn2'))
             net = tf.reshape(net, [self.batch_size, 7, 7, 128])
-            net = tf.nn.relu(
-                bn(deconv2d(net, [self.batch_size, 14, 14, 64], 4, 4, 2, 2, name='g_dc3'), is_training=is_training,
-                   scope='g_bn3'))
+            net = tf.nn.relu(bn(deconv2d(net, [self.batch_size, 14, 14, 64], 4, 4, 2, 2, name='g_dc3'), is_training=is_training, scope='g_bn3'))
+            # net = tf.nn.relu(bn(deconv2d(net, [self.batch_size, int(self.input_height/2), int(self.input_height/2), 64], 4, 4, 2, 2, name='g_dc3'), is_training=is_training, scope='g_bn3'))
 
             out = tf.nn.sigmoid(deconv2d(net, [self.batch_size, 28, 28, 1], 4, 4, 2, 2, name='g_dc4'))
+            # out = tf.nn.sigmoid(deconv2d(net, [self.batch_size, self.input_height, self.input_width, 1], 4, 4, 2, 2, name='g_dc4'))
 
             return out
 
@@ -216,8 +238,8 @@ class GAN(object):
 
         samples = self.sess.run(self.fake_images, feed_dict={self.z: z_sample})
 
-        save_images(samples[:image_frame_dim * image_frame_dim, :, :, :], [image_frame_dim, image_frame_dim],
-                    check_folder(self.result_dir + '/' + self.model_dir) + '/' + self.model_name + '_epoch%03d' % epoch + '_test_all_classes.png')
+        #save_images(samples[:image_frame_dim * image_frame_dim, :, :, :], [image_frame_dim, image_frame_dim],
+        #            check_folder(self.result_dir + '/' + self.model_dir) + '/' + self.model_name + '_epoch%03d' % epoch + '_test_all_classes.png')
 
     @property
     def model_dir(self):

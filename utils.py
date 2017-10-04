@@ -8,12 +8,30 @@ import pprint
 import scipy.misc
 import numpy as np
 from time import gmtime, strftime
-from six.moves import xrange
+# from six.moves import xrange
 import matplotlib.pyplot as plt
 import os, gzip
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+
+from scipy import misc
+
+def load_from_folder(dataset_name):
+
+    data_dir = os.path.join("./data", dataset_name)
+
+    X = np.empty(shape=(0,28,28,1),dtype=np.uint8)
+    for filename in os.listdir(data_dir):
+        image = misc.imread(os.path.join(data_dir,filename))
+        if image.shape[0] == 28 & image.shape[1] == 28:
+            X = np.append(X,image.reshape(1,28,28,1),axis=0)
+
+    seed = 547
+    np.random.seed(seed)
+    np.random.shuffle(X)
+
+    return X / 255., []
 
 def load_mnist(dataset_name):
     data_dir = os.path.join("./data", dataset_name)
