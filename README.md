@@ -3,7 +3,7 @@ Tensorflow implementation of various GANs and VAEs.
 
 **Notes for this forked version**: This is a fork from [tensorflow-generative-model-collections](https://github.com/hwalsuklee/tensorflow-generative-model-collections) repository. Only GAN model is changed:
 
-- Include your own image datasets by putting images in `data/DATASET-NAME` directory, and running the main program with `--dataset DATASET-NAME` option. Due to the architecture of the convolutional layers it is expected that images are all 28x28 pixels in size with one 8-bit color channel (like in the MNIST dataset).
+- Include your own image datasets by putting images in `data/DATASET-NAME` directory, and running the main program with `--dataset DATASET-NAME` option. Due to the architecture of the convolutional layers it is expected that images are all 28x28 pixels in size with one 8-bit color channel (like in the MNIST dataset). Add `DATASET-NAME` to the list of dataset choices in `parse_args()` function in `main.py`.
 
 ## Pytorch version
 Pytorch Version is now availabel at https://github.com/znxlwm/pytorch-generative-model-collections
